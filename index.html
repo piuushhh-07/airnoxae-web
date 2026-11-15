@@ -207,11 +207,11 @@ header.on{background:rgba(8,13,27,.84);border-color:rgba(148,163,184,.14);backdr
 <section class="sec" id="about"><div class="wrap"><div class="head rv"><span class="eb">About AIRNOXAE</span><h2>Thoughtful technology. Practical outcomes.</h2><p class="mut">AIRNOXAE TECHNOLOGIES is a technology studio from Ambernath, Maharashtra. We help businesses and founders turn practical problems and promising ideas into useful digital products.</p></div><div class="grid about-points"><article class="card rv"><h3>Understand the problem</h3><p>We start with your goals, users and existing workflow.</p></article><article class="card rv"><h3>Build what matters</h3><p>We focus on clear, maintainable solutions instead of unnecessary complexity.</p></article><article class="card rv"><h3>Improve together</h3><p>We keep communication direct and refine the solution around real feedback.</p></article></div></div></section>
 
 <section class="sec" id="contact" style="background:var(--panel)"><div class="wrap cols"><div class="rv"><span class="eb">Contact</span><h2>Have an Idea Worth Building?</h2><p class="mut">Tell us what you're working on. Let's explore how technology can help turn your next idea into something useful.</p><div id="ci" style="margin-top:28px;display:grid;gap:14px"></div></div>
-<div class="rv"><p class="mut form-note" id="form-note" hidden></p><form id="fm" novalidate>
-<div class="f"><label for="n">Name *</label><input class="in2" id="n" name="name" autocomplete="name" required><span class="er" id="n-e" hidden></span></div>
-<div class="f"><label for="e">Email *</label><input class="in2" id="e" name="email" type="email" autocomplete="email" required><span class="er" id="e-e" hidden></span></div>
-<div class="f"><label for="t">What do you need? *</label><select class="in2" id="t" name="type" required></select><span class="er" id="t-e" hidden></span></div>
-<div class="f w"><label for="d">A few details *</label><textarea class="in2" id="d" name="description" maxlength="1000" required></textarea><span class="er" id="d-e" hidden></span></div>
+<div class="rv"><p class="mut form-note" id="form-note" role="status" aria-live="polite" hidden></p><form id="fm" novalidate>
+<div class="f"><label for="n">Name *</label><input class="in2" id="n" name="name" autocomplete="name" aria-describedby="n-e" required><span class="er" id="n-e" aria-live="polite" aria-atomic="true" hidden></span></div>
+<div class="f"><label for="e">Email *</label><input class="in2" id="e" name="email" type="email" autocomplete="email" aria-describedby="e-e" required><span class="er" id="e-e" aria-live="polite" aria-atomic="true" hidden></span></div>
+<div class="f"><label for="t">What do you need? *</label><select class="in2" id="t" name="type" aria-describedby="t-e" required></select><span class="er" id="t-e" aria-live="polite" aria-atomic="true" hidden></span></div>
+<div class="f w"><label for="d">A few details *</label><textarea class="in2" id="d" name="description" maxlength="1000" aria-describedby="d-e" required></textarea><span class="er" id="d-e" aria-live="polite" aria-atomic="true" hidden></span></div>
 <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
 <div class="f w"><span class="er" id="fe" role="alert" hidden></span><button class="btn p" id="sb" type="submit">Prepare email</button></div>
 </form>
