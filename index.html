@@ -152,7 +152,7 @@ header.on{background:rgba(8,13,27,.84);border-color:rgba(148,163,184,.14);backdr
 .orbit-one{transform:rotate(-27deg) rotateX(64deg);animation:orbit-turn 24s linear infinite}
 .orbit-two{width:90%;height:43%;border-color:rgba(37,99,235,.48);transform:rotate(42deg) rotateX(68deg);animation:orbit-turn 32s linear infinite reverse}
 .orbit-three{width:62%;height:68%;border-color:rgba(56,189,248,.2);transform:rotate(70deg) rotateX(18deg);animation:orbit-turn 38s linear infinite}
-.stage-chip{position:absolute;z-index:4;min-width:174px;padding:12px 15px;border:1px solid rgba(148,163,184,.22);border-radius:13px;background:rgba(13,24,45,.76);backdrop-filter:blur(14px);box-shadow:0 15px 35px rgba(0,0,0,.2);display:grid;grid-template-columns:8px 1fr;column-gap:9px;align-items:center;animation:chip-float 6s ease-in-out infinite}
+.stage-chip{position:absolute;z-index:4;min-width:174px;padding:12px 15px;border:1px solid rgba(148,163,184,.22);border-radius:13px;background:rgba(13,24,45,.76);backdrop-filter:blur(14px);box-shadow:0 15px 35px rgba(0,0,0,.2);display:grid;grid-template-columns:8px 1fr;column-gap:9px;align-items:center;animation:chip-float 6s ease-in-out infinite}.stage-chip{text-decoration:none;cursor:pointer;transition:border-color .2s,box-shadow .2s,background .2s}.stage-chip:hover,.stage-chip:focus-visible{border-color:rgba(56,189,248,.78);background:rgba(18,38,68,.94);box-shadow:0 0 0 1px rgba(56,189,248,.14),0 18px 42px rgba(0,0,0,.3)}.service-card{scroll-margin-top:100px}.service-card:target{border-color:rgba(56,189,248,.8);box-shadow:0 0 0 1px rgba(56,189,248,.18),0 18px 48px rgba(37,99,235,.2);animation:service-target-glow 1.8s ease-out}@keyframes service-target-glow{0%{box-shadow:0 0 0 8px rgba(56,189,248,.22)}100%{box-shadow:0 0 0 1px rgba(56,189,248,.18),0 18px 48px rgba(37,99,235,.2)}}
 .stage-chip b{font:500 10px 'IBM Plex Mono',monospace;letter-spacing:.07em;color:#EAF6FF}
 .stage-chip small{grid-column:2;color:#91A7C4;font-size:11px;margin-top:3px}
 .chip-dot{width:7px;height:7px;border-radius:50%;background:#38BDF8;box-shadow:0 0 13px #38BDF8;grid-row:span 2}
@@ -195,9 +195,9 @@ header.on{background:rgba(8,13,27,.84);border-color:rgba(148,163,184,.14);backdr
 <div class="stage-grid"></div><div class="stage-halo"></div>
 <div class="stage-orbit orbit-one"></div><div class="stage-orbit orbit-two"></div><div class="stage-orbit orbit-three"></div>
 <div class="stage-core"><span>AX</span><i></i></div>
-<div class="stage-chip chip-ai"><span class="chip-dot"></span><b>AI SYSTEMS</b><small>Intelligence, applied.</small></div>
-<div class="stage-chip chip-build"><span class="chip-dot"></span><b>PRODUCT ENGINEERING</b><small>Ideas into products.</small></div>
-<div class="stage-chip chip-flow"><span class="chip-dot"></span><b>CONNECTED WORKFLOWS</b><small>Less friction. More flow.</small></div>
+<a class="stage-chip chip-ai" href="#service-2" aria-label="Explore AI and workflow automation"><span class="chip-dot"></span><b>AI SYSTEMS</b><small>Intelligence, applied.</small></a>
+<a class="stage-chip chip-build" href="#service-1" aria-label="Explore custom software and product engineering"><span class="chip-dot"></span><b>PRODUCT ENGINEERING</b><small>Ideas into products.</small></a>
+<a class="stage-chip chip-flow" href="#service-3" aria-label="Explore integrations and connected workflows"><span class="chip-dot"></span><b>CONNECTED WORKFLOWS</b><small>Less friction. More flow.</small></a>
 <div class="stage-caption"><span>FIG. 01</span><span>ENGINEERED TO MOVE FORWARD</span></div></div>
 </div></section>
 
@@ -258,7 +258,7 @@ document.querySelectorAll('img[id^=logo]').forEach(i=>i.onerror=()=>i.replaceWit
 addEventListener('load',()=>{$('ld').classList.add('off');setTimeout(()=>$('ld').remove(),600)});setTimeout(()=>$('ld')&&$('ld').classList.add('off'),3500);
 const root=document.documentElement;try{if(localStorage.getItem('ax-theme')==='light')root.dataset.theme='light'}catch(e){}
 $('th').onclick=()=>{const l=root.dataset.theme==='light';l?root.removeAttribute('data-theme'):root.dataset.theme='light';try{localStorage.setItem('ax-theme',l?'dark':'light')}catch(e){}};
-$('svc').innerHTML=SERVICES.map((s,k)=>`<article class="card rv"><span class="pr">0${k+1}</span><div class="ic">${svg(s.i)}</div><h3>${s.t}</h3><p>${s.p}</p><a class="go" href="#contact" data-type="${esc(s.t)}">Start a project →</a></article>`).join('');
+$('svc').innerHTML=SERVICES.map((s,k)=>`<article class="card rv service-card" id="service-${k}"><span class="pr">0${k+1}</span><div class="ic">${svg(s.i)}</div><h3>${s.t}</h3><p>${s.p}</p><a class="go" href="#contact" data-type="${esc(s.t)}">Start a project →</a></article>`).join('');
 $('t').innerHTML='<option value="">Select a project type</option>'+SERVICES.map(s=>`<option>${s.t}</option>`).join('')+'<option>Something else</option>';
 const safeUrl=u=>{try{const x=new URL(u);return x.protocol==='https:'||x.protocol==='http:'?x.href:''}catch(e){return''}};
 let cat='All',last=null;
