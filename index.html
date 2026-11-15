@@ -188,6 +188,34 @@ header.on{background:rgba(8,13,27,.84);border-color:rgba(148,163,184,.14);backdr
 @media(prefers-reduced-motion:reduce){.stage-core,.stage-orbit,.stage-chip,.stage-halo{animation:none!important}}
 
 .fg{grid-template-columns:2fr 1fr 1fr}.about-points{grid-template-columns:repeat(3,minmax(0,1fr))}@media(max-width:760px){.about-points{grid-template-columns:1fr}}
+
+/* Immersive spatial layer — progressive enhancement over the existing CSS sculpture */
+.hero-stage{isolation:isolate;overflow:visible}
+#experience-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none;opacity:0;transition:opacity 1.2s ease}
+.hero-stage.webgl-ready #experience-canvas{opacity:1}
+.hero-stage.webgl-ready .stage-core{opacity:.16;filter:blur(.3px)}
+.hero-stage.webgl-ready .stage-orbit{opacity:.24}
+.stage-grid{z-index:0}
+.stage-halo{z-index:1}
+.stage-light,.stage-scan{z-index:3}
+.stage-chip,.stage-caption{z-index:5}
+.sec{transform-style:preserve-3d}
+.sec .head{transform:translateZ(18px)}
+.card{transform-style:preserve-3d;will-change:transform}
+.card .ic,.card h3,.card p,.card .go{transform:translateZ(12px)}
+.hero .wrap{position:relative;z-index:2}
+.hero .rv{animation:hero-arrive .9s cubic-bezier(.2,.75,.2,1) both}
+.hero .rv h1{animation:hero-title 1.1s .12s cubic-bezier(.2,.75,.2,1) both}
+@keyframes hero-arrive{from{opacity:0;transform:translate3d(0,28px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+@keyframes hero-title{from{opacity:0;transform:translate3d(0,24px,0);filter:blur(10px)}to{opacity:1;transform:none;filter:blur(0)}}
+.scroll-cue{display:inline-flex;align-items:center;gap:12px;margin-top:34px;color:#9FB4D0;font:500 10px var(--fm);letter-spacing:.18em;text-transform:uppercase}
+.scroll-cue i{display:block;width:34px;height:1px;background:linear-gradient(90deg,var(--cyan),transparent);position:relative;overflow:hidden}
+.scroll-cue i:after{content:"";position:absolute;inset:0;background:var(--white);transform:translateX(-100%);animation:cue-sweep 2s ease-in-out infinite}
+@keyframes cue-sweep{55%,100%{transform:translateX(100%)}}
+@media(max-width:900px){#experience-canvas{opacity:.78}.hero-stage.webgl-ready .stage-core{opacity:.28}.sec .head{transform:none}}
+@media(max-width:600px){#experience-canvas{opacity:.58}.hero-stage{height:clamp(330px,96vw,430px)}.hero .rv h1{animation:none}.scroll-cue{margin-top:24px}}
+@media(prefers-reduced-motion:reduce){#experience-canvas{display:none}.hero .rv,.hero .rv h1{animation:none}.scroll-cue i:after{animation:none}}
+
 </style>
 </head>
 <body>
@@ -206,6 +234,7 @@ header.on{background:rgba(8,13,27,.84);border-color:rgba(148,163,184,.14);backdr
 <p class="d">AIRNOXAE TECHNOLOGIES builds thoughtful digital solutions that help businesses streamline operations, connect with customers and turn ideas into working products.</p>
 <div class="row"><a class="btn p mag" href="#work">Explore Our Work</a><a class="btn s mag" href="#contact">Let’s Build Something</a></div></div>
 <div class="hero-stage" id="hero-stage" role="img" aria-label="Interactive dimensional AIRNOXAE technology sculpture">
+<canvas id="experience-canvas" aria-hidden="true"></canvas>
 <div class="stage-grid"></div><div class="stage-halo"></div><div class="stage-light"></div><div class="stage-scan"></div>
 <div class="stage-orbit orbit-one"></div><div class="stage-orbit orbit-two"></div><div class="stage-orbit orbit-three"></div>
 <div class="stage-core"><span>AX</span><i></i><b class="core-glint"></b></div>
@@ -335,4 +364,5 @@ if(matchMedia('(hover:hover) and (pointer:fine)').matches&&!matchMedia('(prefers
 
 })();
 </script>
+<script type="module" src="/experience.js"></script>
 </body></html>
