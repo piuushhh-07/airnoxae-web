@@ -252,8 +252,8 @@ const PROJECTS=[
 /* ===== end config ===== */
 const $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const svg=k=>`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${I[k]}</svg>`;
-$('logo-brand').src=BRAND.logos.brand;$('logo-symbol').src=BRAND.logos.symbol;$('logo-full').src=BRAND.logos.full;$('logo-footer').src=BRAND.logos.full;
-$('logo-load').src=BRAND.logos.symbol;$('logo-full').loading='lazy';
+$('logo-brand').src=BRAND.logos.brand;$('logo-symbol').src=BRAND.logos.symbol;$('logo-footer').src=BRAND.logos.full;
+$('logo-load').src=BRAND.logos.symbol;
 document.querySelectorAll('img[id^=logo]').forEach(i=>i.onerror=()=>i.replaceWith(Object.assign(document.createElement('span'),{textContent:'AIRNOXAE',className:'ph'})));
 addEventListener('load',()=>{$('ld').classList.add('off');setTimeout(()=>$('ld').remove(),600)});setTimeout(()=>$('ld')&&$('ld').classList.add('off'),3500);
 const root=document.documentElement;try{if(localStorage.getItem('ax-theme')==='light')root.dataset.theme='light'}catch(e){}
