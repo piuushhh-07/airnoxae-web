@@ -35,11 +35,17 @@ Most content and configuration live near the top of the inline script in `index.
 
 Keep the project discovery indexes aligned with the order of `SERVICES` when editing the service list.
 
-## Contact form behavior
+## Contact form delivery
 
-The `SITE.formEndpoint` value is currently empty. In this state, the form validates the inquiry locally and prepares a `mailto:` draft; it does **not** send or store form submissions. Visitors must review and send the email themselves.
+The contact form posts to the same-origin Vercel Function at `/api/contact`. The function validates submissions, checks the honeypot field, applies a small per-instance rate limit, and sends enquiries through Resend. The visitor's email address is used as the reply-to address; the recipient is `info@airnoxaetechnologies.com` by default.
 
-To enable automatic submissions, configure a trusted HTTPS endpoint that accepts the JSON payload sent by the form and returns a successful HTTP response. The endpoint should implement server-side validation, spam protection, rate limiting, and appropriate privacy/data-retention practices. Do not put API keys or email-provider secrets in this static HTML file. After configuring the endpoint, update the form's success/failure copy and test an end-to-end submission before publishing.
+Configure these environment variables in Vercel (Production and Preview as appropriate):
+
+- `RESEND_API_KEY` — secret API key from Resend.
+- `RESEND_FROM_EMAIL` — sender address on a domain verified in Resend, for example `AIRNOXAE Website <website@your-verified-domain.com>`.
+- `CONTACT_TO_EMAIL` — optional destination; defaults to `info@airnoxaetechnologies.com`.
+
+Redeploy after adding or changing environment variables. Never put these values in `index.html` or commit them to Git. Until the variables are configured, or if delivery fails, the form falls back to a prepared email draft. The endpoint does not persist submissions. Its in-memory rate limit is best-effort per serverless instance; add a shared rate-limit store or edge protection before high-volume public campaigns. Test a real submission end-to-end after configuration.
 
 ## SEO and indexing
 
@@ -52,6 +58,6 @@ Before merging website changes:
 1. Check the Vercel preview deployment.
 2. Test desktop and mobile navigation and layout.
 3. Test project filters and project detail dialogs.
-4. Test the three-step inquiry form, including the email-draft fallback.
+4. Test the one-step inquiry form, including successful server delivery and the email-draft fallback.
 5. Check keyboard navigation and `prefers-reduced-motion` behavior.
 6. Confirm the Vercel deployment status is successful after merge.
