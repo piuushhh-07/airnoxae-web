@@ -148,7 +148,8 @@
 
   if (reducedMotion || !supportsWebGL) return;
 
-  let renderer, scene, camera, rig, earth, clouds, atmosphere, cityLights, rings = [], particles, key;
+  let renderer, scene, camera, rig, earth, clouds, atmosphere, cityLights, rings = [], ribbons = [], shards = [], particles, key;
+  const burstSystems = [];
   let raf = 0, visible = false, disposed = false;
   let pointerX = 0, pointerY = 0, scrollProgress = 0;
   let particleBase = new Float32Array(0), particleVelocity = new Float32Array(0);
@@ -190,6 +191,15 @@
       ring.rotation.z += (index % 2 ? -1 : 1) * (.00075 + index * .00018);
       ring.rotation.x += .00022;
     });
+    ribbons.forEach((ribbon, index) => {
+      ribbon.material.uniforms.uTime.value = elapsed;
+      ribbon.rotation.y += (index % 2 ? -1 : 1) * .00022;
+    });
+    shards.forEach((shard) => {
+      shard.mesh.rotation.x += shard.speed;
+      shard.mesh.rotation.y -= shard.speed * .72;
+      shard.mesh.position.y = shard.baseY + Math.sin(elapsed * .7 + shard.phase) * .045;
+    });
     arcPulses.forEach((pulse) => {
       pulse.progress = (pulse.progress + pulse.speed) % 1;
       pulse.mesh.position.copy(pulse.curve.getPoint(pulse.progress));
@@ -222,6 +232,26 @@
       particlePositions.array[ix + 2] += particleVelocity[ix + 2];
     }
     particlePositions.needsUpdate = true;
+    for (let b = burstSystems.length - 1; b >= 0; b -= 1) {
+      const burst = burstSystems[b];
+      const age = elapsed - burst.started;
+      if (age > 1.15) {
+        scene.remove(burst.points);
+        burst.geometry.dispose();
+        burst.material.dispose();
+        burstSystems.splice(b, 1);
+        continue;
+      }
+      const attr = burst.geometry.attributes.position;
+      for (let i = 0; i < attr.count; i += 1) {
+        const k = i * 3;
+        attr.array[k] = burst.origin[k] + burst.velocity[k] * age;
+        attr.array[k + 1] = burst.origin[k + 1] + burst.velocity[k + 1] * age - age * age * .42;
+        attr.array[k + 2] = burst.origin[k + 2] + burst.velocity[k + 2] * age;
+      }
+      attr.needsUpdate = true;
+      burst.material.opacity = Math.max(0, 1 - age / 1.15);
+    }
     particles.rotation.y = elapsed * .012;
     particles.rotation.x = Math.sin(elapsed * .15) * .05;
     renderer.render(scene, camera);
@@ -405,7 +435,49 @@
         rings.push(mesh);
       });
 
-      const count = mobile ? 72 : 156;
+      // Procedural energy ribbons: animated shader bands wrap around the existing Earth.
+      const ribbonSpecs = [
+        { radius: 1.56, depth: .76, lift: .12, rotation: [1.08, .18, -.34], color: 0x38bdf8, opacity: .9 },
+        { radius: 1.78, depth: .62, lift: -.08, rotation: [-.58, .92, .66], color: 0x2563eb, opacity: .72 },
+        { radius: 1.43, depth: .9, lift: .2, rotation: [.42, -.76, 1.12], color: 0x9be7ff, opacity: .62 }
+      ];
+      ribbonSpecs.forEach((spec, index) => {
+        const points = [];
+        for (let step = 0; step <= 120; step += 1) {
+          const angle = (step / 120) * Math.PI * 2;
+          points.push(new THREE.Vector3(
+            Math.cos(angle) * spec.radius,
+            Math.sin(angle * 2 + index) * spec.lift,
+            Math.sin(angle) * spec.radius * spec.depth
+          ));
+        }
+        const curve = new THREE.CatmullRomCurve3(points, true, 'catmullrom', .35);
+        const geometry = new THREE.TubeGeometry(curve, 240, index === 0 ? .014 : .01, 8, true);
+        const material = new THREE.ShaderMaterial({
+          uniforms: { uTime: { value: 0 }, uColor: { value: new THREE.Color(spec.color) }, uOpacity: { value: spec.opacity } },
+          vertexShader: 'varying vec2 vUv; void main(){ vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }',
+          fragmentShader: 'uniform float uTime; uniform vec3 uColor; uniform float uOpacity; varying vec2 vUv; void main(){ float wave=pow(max(0.0,sin(vUv.x*18.8496-uTime*2.1)),9.0); float edge=smoothstep(0.0,0.16,vUv.y)*(1.0-smoothstep(0.84,1.0,vUv.y)); float flow=.35+.65*sin(vUv.x*6.28318-uTime*1.25)*.5+.25; vec3 color=mix(uColor,vec3(.72,.96,1.0),wave); float alpha=(.16+wave*.72)*edge*flow*uOpacity; gl_FragColor=vec4(color,alpha); }',
+          transparent: true, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending
+        });
+        const ribbon = new THREE.Mesh(geometry, material);
+        ribbon.rotation.set(...spec.rotation);
+        rig.add(ribbon);
+        ribbons.push(ribbon);
+      });
+
+      // Sparse wireframe fragments add an assembling, aerodynamic structure around the globe.
+      for (let i = 0; i < (mobile ? 3 : 7); i += 1) {
+        const angle = (i / 7) * Math.PI * 2;
+        const mesh = new THREE.Mesh(
+          new THREE.OctahedronGeometry(.075 + (i % 2) * .025, 0),
+          new THREE.MeshBasicMaterial({ color: i % 2 ? 0x38bdf8 : 0x9be7ff, wireframe: true, transparent: true, opacity: .5 })
+        );
+        mesh.position.set(Math.cos(angle) * (1.8 + (i % 3) * .12), Math.sin(angle * 1.4) * .8, Math.sin(angle) * 1.8);
+        rig.add(mesh);
+        shards.push({ mesh, baseY: mesh.position.y, phase: angle, speed: .002 + (i % 3) * .0007 });
+      }
+
+      const count = mobile ? 220 : 780;
       const positions = new Float32Array(count * 3);
       for (let i = 0; i < count; i += 1) {
         const radius = 2.1 + Math.random() * 2.5;
@@ -494,6 +566,32 @@
         else stop();
       }, { threshold: 0.01 });
       visibility.observe(stage);
+      // Clicks create a short-lived particle burst without interrupting Earth interaction.
+      stage.addEventListener('pointerdown', (event) => {
+        if (disposed || !scene) return;
+        const rect = stage.getBoundingClientRect();
+        const ox = ((event.clientX - rect.left) / Math.max(1, rect.width) - .5) * 2.2;
+        const oy = (.5 - (event.clientY - rect.top) / Math.max(1, rect.height)) * 1.9;
+        const count = mobile ? 22 : 38;
+        const origin = new Float32Array(count * 3);
+        const velocity = new Float32Array(count * 3);
+        for (let i = 0; i < count; i += 1) {
+          const k = i * 3;
+          origin[k] = ox; origin[k + 1] = oy; origin[k + 2] = .25;
+          const theta = Math.random() * Math.PI * 2;
+          const phi = Math.acos(2 * Math.random() - 1);
+          const speed = .55 + Math.random() * 1.15;
+          velocity[k] = Math.sin(phi) * Math.cos(theta) * speed;
+          velocity[k + 1] = Math.cos(phi) * speed;
+          velocity[k + 2] = Math.sin(phi) * Math.sin(theta) * speed;
+        }
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute('position', new THREE.BufferAttribute(origin.slice(), 3));
+        const material = new THREE.PointsMaterial({ color: 0x9be7ff, size: mobile ? .045 : .055, transparent: true, opacity: .9, depthWrite: false, blending: THREE.AdditiveBlending });
+        const points = new THREE.Points(geometry, material);
+        scene.add(points);
+        burstSystems.push({ points, geometry, material, origin, velocity, started: (performance.now() - clockStart) * .001 });
+      }, { passive: true });
       addEventListener('resize', resize, { passive: true });
       start();
     } catch (_) {
