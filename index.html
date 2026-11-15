@@ -164,6 +164,7 @@ header.on{background:rgba(8,13,27,.84);border-color:rgba(148,163,184,.14);backdr
 @media(max-width:560px){.hero-stage{height:350px;margin-top:8px}.stage-core{width:148px}.stage-chip{min-width:142px;padding:9px 10px}.stage-chip b{font-size:9px}.stage-chip small{font-size:10px}.chip-ai{top:7%;right:0}.chip-build{bottom:19%;left:0}.chip-flow{bottom:4%;right:0}.stage-caption{font-size:8px}.hero{padding-top:104px}.hero h1{font-size:clamp(46px,13vw,68px)}}
 @media(prefers-reduced-motion:reduce){.stage-core,.stage-orbit,.stage-chip,.stage-halo{animation:none!important}}
 
+.fg{grid-template-columns:2fr 1fr 1fr}.about-points{grid-template-columns:repeat(3,minmax(0,1fr))}@media(max-width:760px){.about-points{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -172,7 +173,7 @@ header.on{background:rgba(8,13,27,.84);border-color:rgba(148,163,184,.14);backdr
 <header id="hd"><div class="wrap bar">
 <a class="logo" href="#home" aria-label="AIRNOXAE TECHNOLOGIES home"><img class="wm" id="logo-brand" alt="AIRNOXAE TECHNOLOGIES"><img class="sym" id="logo-symbol" alt="AIRNOXAE symbol"></a>
 <button class="burger" id="bg" aria-expanded="false" aria-controls="nv" aria-label="Menu">☰</button>
-<nav id="nv" aria-label="Main"><a class="l" href="#home">Home</a><a class="l" href="#services">Services</a><a class="l" href="#work">Our Work</a><a class="l" href="#industries">Industries</a><a class="l" href="#about">About</a><a class="l" href="#contact">Contact</a><button class="tg" id="th" type="button" aria-label="Toggle light or dark appearance">◐</button><button class="tg" id="ck" type="button" aria-label="Open command menu (Ctrl or Command K)">⌘K</button><a class="btn p mag" href="#contact" style="min-height:42px">Start a Project</a></nav>
+<nav id="nv" aria-label="Main"><a class="l" href="#home">Home</a><a class="l" href="#services">Services</a><a class="l" href="#work">Work</a><a class="l" href="#about">About</a><a class="l" href="#contact">Contact</a><button class="tg" id="th" type="button" aria-label="Toggle light or dark appearance">◐</button><a class="btn p mag" href="#contact" style="min-height:42px">Start a Project</a></nav>
 </div></header>
 <main id="main-content">
 <section class="hero" id="home"><div class="wrap hgrid">
@@ -191,27 +192,18 @@ header.on{background:rgba(8,13,27,.84);border-color:rgba(148,163,184,.14);backdr
 <div class="stage-caption"><span>FIG. 01</span><span>ENGINEERED TO MOVE FORWARD</span></div></div>
 </div></section>
 
-<section class="brand-system" aria-label="AIRNOXAE brand identity">
-  <div class="wrap brand-system-inner">
-    <div class="brand-system-copy"><span class="eb">Our identity</span><h2>One vision. Built for what’s next.</h2><p class="mut">AIRNOXAE TECHNOLOGIES · Innovate · Build · Transform</p></div>
-    <div class="brand-lockups"><div class="brand-lockup symbol-lockup"><img src="assets/symbol.png" alt="AIRNOXAE symbol"></div><div class="brand-lockup word-lockup"><img src="assets/wordmark.png" alt="AIRNOXAE TECHNOLOGIES wordmark"></div></div>
-  </div>
-</section>
+
 
 <section class="sec" id="services"><div class="wrap"><div class="head rv"><span class="eb">Services</span><h2>Technology Built Around Your Ambition.</h2><p class="mut">Each service starts from a business problem, not a technology list.</p></div><div class="grid" id="svc"></div></div></section>
 
-<section class="sec light" id="discover"><div class="wrap"><div class="head rv"><span class="eb">Project Discovery</span><h2>Not sure where to start?</h2><p class="mut">Answer three questions and we’ll suggest relevant services.</p></div><div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr))"><div class="f"><label for="wi">Your industry</label><select class="in2" id="wi"></select></div><div class="f"><label for="wc">Your biggest challenge</label><select class="in2" id="wc"></select></div><div class="f"><label for="ws">What you’re looking for</label><select class="in2" id="ws"></select></div></div><div id="wr" style="margin-top:32px" aria-live="polite"></div></div></section>
+
 
 <section class="sec" id="work" style="background:var(--panel)"><div class="wrap"><div class="head rv"><span class="eb">Our Work</span><h2>Products, Builds & Experiments.</h2><p class="mut">A selection of AIRNOXAE-built products and website concepts. Each item is labelled honestly by its current stage; these are not presented as client case studies.</p></div>
 <div class="tabs" id="tabs" role="group" aria-label="Filter projects"></div><div class="grid" id="prj" aria-live="polite"></div></div></section>
 
-<section class="sec light" id="industries"><div class="wrap"><div class="head rv"><span class="eb">Industries</span><h2>Solutions for Businesses Ready to Evolve.</h2><p class="mut">Industries we can serve, not a list of existing customers.</p></div><div class="grid" id="ind"></div><div style="margin-top:36px"><a class="btn p mag" href="#contact">Discuss Your Industry Requirements</a></div></div></section>
 
-<section class="sec" id="about"><div class="wrap">
-<div class="cols"><div class="rv"><span class="eb">Built for Ambitious Businesses</span><h2>Who We Work With</h2><p class="mut" style="margin-bottom:20px">We work toward helping early-stage startups, small and medium-sized businesses, healthcare practices, retailers and local businesses, established organisations seeking digital improvements, and founders validating new product ideas.</p><p class="mut">We focus on the problems behind the brief: repetitive manual processes, disconnected tools, poor digital experiences, inefficient workflows, and the difficulty of validating and launching software ideas.</p><img id="logo-full" alt="AIRNOXAE TECHNOLOGIES. Innovate. Build. Transform." style="max-width:300px;margin-top:28px"></div>
-<div class="rv"><span class="eb">Why AIRNOXAE</span><div id="why" style="margin-top:14px"></div></div></div>
-<div style="margin-top:88px"><div class="head rv"><span class="eb">How We Work</span><h2>From idea to iteration.</h2></div><div class="steps rv" id="steps"></div><p class="mut" style="margin-top:20px;font-size:14px">Timelines are agreed per project once requirements are defined.</p></div>
-<div class="grid" id="met" style="margin-top:64px"></div><div style="margin-top:72px" id="techwrap"><span class="eb">Technology</span><svg id="tech" viewBox="0 0 600 320" role="img" aria-label="Technologies we use, connected to AIRNOXAE" style="margin-top:14px"></svg></div></div></section>
+
+<section class="sec" id="about"><div class="wrap"><div class="head rv"><span class="eb">About AIRNOXAE</span><h2>Thoughtful technology. Practical outcomes.</h2><p class="mut">AIRNOXAE TECHNOLOGIES is a technology studio from Ambernath, Maharashtra. We help businesses and founders turn practical problems and promising ideas into useful digital products.</p></div><div class="grid about-points"><article class="card rv"><h3>Understand the problem</h3><p>We start with your goals, users and existing workflow.</p></article><article class="card rv"><h3>Build what matters</h3><p>We focus on clear, maintainable solutions instead of unnecessary complexity.</p></article><article class="card rv"><h3>Improve together</h3><p>We keep communication direct and refine the solution around real feedback.</p></article></div></div></section>
 
 <section class="sec" id="contact" style="background:var(--panel)"><div class="wrap cols"><div class="rv"><span class="eb">Contact</span><h2>Have an Idea Worth Building?</h2><p class="mut">Tell us what you're working on. Let's explore how technology can help turn your next idea into something useful.</p><div id="ci" style="margin-top:28px;display:grid;gap:14px"></div></div>
 <div class="rv"><p class="mut form-note" id="form-note" hidden></p><form id="fm" novalidate>
@@ -225,11 +217,8 @@ header.on{background:rgba(8,13,27,.84);border-color:rgba(148,163,184,.14);backdr
 <div class="f w"><span class="er" id="fe" role="alert" hidden></span><p class="mut" id="sp" style="font-size:14px" aria-live="polite"></p><div class="row"><button class="btn s" id="bk" type="button">Back</button><button class="btn p" id="nx" type="button">Next →</button><button class="btn p" id="sb" type="submit">Submit inquiry</button></div></div></form>
 <div class="res" id="res" hidden><h3 id="rt" tabindex="-1" style="font:700 24px var(--fd)"></h3><p class="mut" id="rp" style="margin:10px 0 16px"></p><textarea class="in2" id="rx" readonly hidden aria-label="Inquiry details"></textarea><div class="row" style="margin-top:14px"><a class="btn p" id="ml" href="#" hidden>Open email draft</a><button class="btn s" id="cp" type="button" hidden>Copy details</button><button class="btn s" id="rs" type="button">Back to form</button></div><p id="cs" role="status" class="mut"></p></div></div></div></section>
 </main>
-<footer><div class="wrap"><div class="fg"><div><img id="logo-footer" alt="AIRNOXAE TECHNOLOGIES" style="max-width:220px;margin-bottom:14px"><p style="color:var(--slate);font-size:15px">Software, AI and digital solutions from Ambernath, Maharashtra.</p></div>
-<div><h3>Navigate</h3><ul><li><a href="#home">Home</a></li><li><a href="#services">Services</a></li><li><a href="#work">Our Work</a></li><li><a href="#industries">Industries</a></li><li><a href="#about">About</a></li><li><a href="#contact">Contact</a></li></ul></div>
-<div><h3>Services</h3><ul id="fs"></ul></div><div><h3>Contact</h3><ul id="fc"></ul></div></div>
-<div class="fb"><span id="cr"></span><span style="font-family:var(--fm);letter-spacing:.12em">INNOVATE. BUILD. TRANSFORM.</span></div></div></footer>
-<dialog id="cmd" aria-label="Command menu"><div class="bd"><input class="in2" id="cq" role="combobox" aria-expanded="true" aria-controls="cl" aria-label="Search sections and projects" placeholder="Search sections and projects…" autocomplete="off"><ul id="cl" class="cl" role="listbox"></ul></div></dialog>
+<footer><div class="wrap"><div class="fg"><div><img id="logo-footer" alt="AIRNOXAE TECHNOLOGIES" style="max-width:190px;margin-bottom:12px"><p style="color:var(--slate);font-size:14px">Software, AI and digital solutions from Ambernath, Maharashtra.</p></div><div><h3>Explore</h3><ul><li><a href="#home">Home</a></li><li><a href="#services">Services</a></li><li><a href="#work">Selected work</a></li><li><a href="#about">About</a></li><li><a href="#contact">Contact</a></li></ul></div><div><h3>Contact</h3><ul id="fc"></ul></div></div><div class="fb"><span id="cr"></span><span style="font-family:var(--fm);letter-spacing:.12em">INNOVATE. BUILD. TRANSFORM.</span></div></div></footer>
+
 <dialog id="dlg" aria-labelledby="dt"><div class="bd"><button class="x" id="dx" aria-label="Close">×</button><div id="db"></div></div></dialog>
 <button id="top" aria-label="Back to top">↑</button><div id="glow" aria-hidden="true"></div>
 <script>
@@ -239,16 +228,12 @@ const BRAND={logos:{brand:'assets/wordmark.png',symbol:'assets/symbol.png',full:
 const SITE={email:'info@airnoxaetechnologies.com',phone:'+91 8850951080',address:'Ambernath, Maharashtra, India',socials:[/* {label:'LinkedIn',url:'https://...'} */],
  formEndpoint:''}; // POST JSON endpoint (Formspree, Getform or your API). Empty = no sending; visitor gets a copy/email draft.
 const I={code:'<polyline points="8 7 3 12 8 17"/><polyline points="16 7 21 12 16 17"/>',web:'<rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/>',ai:'<circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/>',flow:'<circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8 11l8-4M8 13l8 4"/>',db:'<ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/>',api:'<path d="M9 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/>',qa:'<path d="M5 12l4 4 10-10"/>',map:'<path d="M12 3l9 5-9 5-9-5zM3 13l9 5 9-5"/>'};
-const SERVICES=[ // active:false hides a service until confirmed
-{t:'Custom Website Development',i:'web',p:'Your business looks dated or unclear online and costs you enquiries.',a:1},
-{t:'Full-Stack Web Applications',i:'code',p:'Spreadsheets and email threads cannot support how your customers or team need to work.',a:1},
-{t:'AI & Machine Learning Solutions',i:'ai',p:'Data sits unused. We apply AI where it creates real value, not for show.',a:1},
-{t:'Business Automation & Workflow Tools',i:'flow',p:'Repetitive manual steps slow your team down and invite mistakes.',a:1},
-{t:'Custom Business Management Software',i:'db',p:'Off-the-shelf tools force you to bend your process around them.',a:1},
-{t:'API Development & System Integrations',i:'api',p:'Disconnected tools mean re-entering the same data again and again.',a:1},
-{t:'Quality Assurance & Software Testing',i:'qa',p:'Releases break things. Structured testing catches issues first.',a:0},
-{t:'Technical Consulting & Digital Product Development',i:'map',p:'You have an idea but need help scoping, validating and shaping it into a product.',a:1}].filter(s=>s.a);
-const CATS=['Websites','Business Software','AI & Automation','Experiments & Prototypes'];
+const SERVICES=[
+ {t:'Websites & Digital Experiences',i:'web',p:'Professional, responsive websites that explain your business clearly and turn visitors into enquiries.'},
+ {t:'Custom Software & Web Applications',i:'code',p:'Purpose-built applications and business tools shaped around the way your team works.'},
+ {t:'AI & Workflow Automation',i:'ai',p:'Practical AI and automation that reduce repetitive work and make existing processes smarter.'},
+ {t:'Integrations & Product Engineering',i:'flow',p:'Connect systems, validate product ideas and build reliable foundations for digital products.'}].map(s=>({...s,a:1}));
+ const CATS=['Websites','Business Software'];
 /* PROJECTS: add only verified work. Fields: name, category (one of CATS), status ('Live Demo'|'Prototype'|'In Development'), summary,
    problem, features[], stack[], repoUrl (real GitHub link only),  (verified only), image (real screenshot), demoUrl (working URL only; omit if none) */
 const PROJECTS=[
@@ -256,10 +241,6 @@ const PROJECTS=[
  {name:'ReviewTap',category:'Business Software',status:'In Development',label:'Internal product build',summary:'A dynamic QR management platform that helps businesses guide customers to write their own Google review after a visit.',problem:'Printed review links are difficult to update and generic prompts do not help customers describe their actual experience.',features:['Create and assign reusable QR codes','Update review destinations without reprinting','Category-specific review prompts','Admin inventory and business assignment workflows'],stack:['React','Node.js','Neon Postgres','Vercel'],repoUrl:'https://github.com/piuushhh-07/reviewtap-QR'},
  {name:'Green Hill Resort',category:'Websites',status:'Prototype',label:'Hospitality website concept',summary:'A video-led resort website concept with responsive sections, a visual gallery and a structured booking enquiry flow.',problem:'Hospitality businesses need a clear digital experience that communicates the property and makes enquiries straightforward.',features:['Responsive, video-led hero experience','Property gallery and hospitality-focused content','Booking enquiry form prepared for Netlify Forms','Mobile-first layout and contact flow'],stack:['HTML','CSS','JavaScript'],repoUrl:'https://github.com/piuushhh-07/green-hill-resort'}
 ];
-const INDUSTRIES=[['Healthcare & Dental Clinics','Appointment workflows and clinic administration.'],['Retail & E-commerce','Inventory management and customer-facing digital experiences.'],['Restaurants & Hospitality','A strong online presence and streamlined customer inquiries.'],['Startups & Growing Businesses','MVP development and rapid product validation.'],['Education & Learning','Learning platforms and administrative tools.'],['Professional Services','Client portals and internal workflow tools.'],['Enterprise Operations','Process automation and system integration.']];
-const WHY=[['Purposeful Engineering','Solve the actual problem rather than adding complexity.'],['Practical Innovation','Apply AI and automation where they create genuine value.'],['Thoughtful Design','Make software intuitive and professional.'],['Scalable Foundations','Structure applications for maintainability and growth.'],['Collaborative Delivery','Communicate clearly and work toward defined requirements.']];
-const STEPS=[['Discover','Understand the business, users, challenges and objectives.'],['Design','Plan the user experience, architecture and scope.'],['Build','Develop, integrate and test the solution.'],['Refine','Review feedback, resolve issues and prepare the next iteration.']];
-const TECH=[{n:'HTML',g:'Frontend'},{n:'CSS',g:'Frontend'},{n:'JavaScript',g:'Frontend'}]; // only verified; this file uses nothing else. Add Node.js, Python, etc. once confirmed in real projects.
 /* ===== end config ===== */
 const $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const svg=k=>`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${I[k]}</svg>`;
@@ -270,12 +251,6 @@ addEventListener('load',()=>{$('ld').classList.add('off');setTimeout(()=>$('ld')
 const root=document.documentElement;try{if(localStorage.getItem('ax-theme')==='light')root.dataset.theme='light'}catch(e){}
 $('th').onclick=()=>{const l=root.dataset.theme==='light';l?root.removeAttribute('data-theme'):root.dataset.theme='light';try{localStorage.setItem('ax-theme',l?'dark':'light')}catch(e){}};
 $('svc').innerHTML=SERVICES.map((s,k)=>`<article class="card rv"><span class="pr">0${k+1}</span><div class="ic">${svg(s.i)}</div><h3>${s.t}</h3><p>${s.p}</p><a class="go" href="#contact" data-type="${esc(s.t)}">Start a project →</a></article>`).join('');
-$('ind').innerHTML=INDUSTRIES.map(x=>`<article class="card rv"><h3>${x[0]}</h3><p>${x[1]}</p></article>`).join('');
-$('why').innerHTML=WHY.map(x=>`<div class="pill"><b>${x[0]}</b><span>${x[1]}</span></div>`).join('');
-$('steps').innerHTML=STEPS.map((x,k)=>`<div><span class="n">0${k+1}</span><h3>${x[0]}</h3><p class="mut" style="font-size:15px">${x[1]}</p></div>`).join('');
-const N=TECH.length;TECH.length?$('tech').innerHTML='<ellipse cx="300" cy="160" rx="220" ry="110" fill="none" stroke="#168BFF" stroke-opacity=".3" stroke-dasharray="2 8"/><circle cx="300" cy="160" r="14" fill="none" stroke="#168BFF" stroke-width="2"/><circle cx="300" cy="160" r="4" fill="#168BFF"/>'+TECH.map((t,i)=>{const a=i/N*6.283-1.571,x=300+220*Math.cos(a),y=160+110*Math.sin(a);return`<line x1="300" y1="160" x2="${x}" y2="${y}" stroke="#168BFF" stroke-opacity=".35"/><g class="nd" tabindex="0"><title>${esc(t.g)}: ${esc(t.n)}</title><circle cx="${x}" cy="${y}" r="7" fill="#168BFF"/><text x="${x}" y="${y+28}">${esc(t.n)}</text></g>`}).join(''):$('techwrap').hidden=true;
-const METRICS=[]; // verified only: {label:'Projects delivered',value:12,suffix:'+'}
-$('met').innerHTML=METRICS.map(m=>`<div class="card"><h3 data-v="${+m.value}" data-s="${esc(m.suffix||'')}">0</h3><p>${esc(m.label)}</p></div>`).join('');
 $('t').innerHTML='<option value="">Select a project type</option>'+SERVICES.map(s=>`<option>${s.t}</option>`).join('')+'<option>Something else</option>';
 const safeUrl=u=>{try{const x=new URL(u);return x.protocol==='https:'||x.protocol==='http:'?x.href:''}catch(e){return''}};
 let cat='All',last=null;
@@ -292,7 +267,6 @@ drawTabs();drawProjects();
 /* contact details: only configured values shown */
 $('ci').innerHTML=[['Email',`<a href="mailto:${SITE.email}" class="addr">${SITE.email}</a>`],['Phone',`<a href="tel:${SITE.phone.replace(/\s/g,'')}" class="addr">${SITE.phone}</a>`],['Address',`<span class="addr">${SITE.address}</span>`]].map(r=>`<div><span class="eb">${r[0]}</span><br>${r[1]}</div>`).join('');
 $('fc').innerHTML=`<li>${SITE.email}</li><li>${SITE.phone}</li><li>${SITE.address}</li>`+SITE.socials.map(s=>`<li><a href="${safeUrl(s.url)}" target="_blank" rel="noopener noreferrer">${esc(s.label)}</a></li>`).join('');
-$('fs').innerHTML=SERVICES.slice(0,6).map(s=>`<li>${s.t}</li>`).join('');
 $('cr').textContent='© '+new Date().getFullYear()+' AIRNOXAE TECHNOLOGIES. All rights reserved.';
 document.addEventListener('click',e=>{const a=e.target.closest('[data-type]');if(a)$('t').value=a.dataset.type});
 /* form */
@@ -337,30 +311,6 @@ if(matchMedia('(hover:hover) and (pointer:fine)').matches&&!matchMedia('(prefers
  const g=$('glow');g.style.display='block';addEventListener('pointermove',e=>{g.style.transform=`translate(${e.clientX}px,${e.clientY}px)`},{passive:true});
  document.querySelectorAll('.mag').forEach(b=>{b.addEventListener('pointermove',e=>{const r=b.getBoundingClientRect();b.style.transform=`translate(${(e.clientX-r.left-r.width/2)*.12}px,${(e.clientY-r.top-r.height/2)*.2}px)`});b.addEventListener('pointerleave',()=>b.style.transform='')})}
 
-/* discovery wizard (indexes refer to SERVICES order) */
-const CH=[['Too many manual, repetitive tasks',[3,4]],['Tools that don’t talk to each other',[5,3]],['Outdated or unclear online presence',[0]],['We have an idea to validate',[6,1]],['Data we can’t use or understand',[2,4]],['Customers or staff need a better system',[1,4]]];
-const SOL=[['A website',[0]],['A web or business application',[1,4]],['Automation',[3]],['AI or data insights',[2]],['Integration between systems',[5]],['Not sure yet, I need advice',[6]]];
-const opt=(a,h)=>`<option value="">${h}</option>`+a.map((x,i)=>`<option value="${i}">${esc(Array.isArray(x)?x[0]:x)}</option>`).join('');
-$('wi').innerHTML=opt(INDUSTRIES,'Select industry');$('wc').innerHTML=opt(CH,'Select challenge');$('ws').innerHTML=opt(SOL,'Select solution');
-function rec(){const i=$('wi').value,c=$('wc').value,s=$('ws').value;
- if(!c&&!s){$('wr').innerHTML='<p class="mut">Choose a challenge or a solution to see recommendations.</p>';return}
- const ix=[...new Set([...(s?SOL[s][1]:[]),...(c?CH[c][1]:[])])].filter(k=>SERVICES[k]).slice(0,3);
- $('wr').innerHTML=`<div class="grid">${ix.map(k=>`<article class="card"><h3>${SERVICES[k].t}</h3><p>${SERVICES[k].p}</p></article>`).join('')}</div><p style="margin-top:22px"><button class="btn p" id="wu" type="button">Use this in my inquiry →</button></p>`;
- $('wu').onclick=()=>{$('t').value=SERVICES[ix[0]].t;$('d').value=`Industry: ${i?INDUSTRIES[i][0]:'Not specified'}\nChallenge: ${c?CH[c][0]:'Not specified'}\nLooking for: ${s?SOL[s][0]:'Not specified'}\n\n`;go(1);location.hash='#contact'}}
-['wi','wc','ws'].forEach(k=>$(k).addEventListener('change',rec));rec();
-/* command menu */
-const cmd=$('cmd'),cq=$('cq'),cl=$('cl');let it=[],ai=0;
-const base=()=>[['Home','#home'],['Services','#services'],['Project Discovery Wizard','#discover'],['Our Work','#work'],['Industries','#industries'],['About','#about'],['Start an inquiry','#contact']].map(x=>({l:x[0],h:x[1]})).concat(PROJECTS.map((p,i)=>({l:'Project: '+p.name,p:i})),[{l:'Toggle light / dark appearance',f:()=>$('th').click()}]);
-function paint(){cl.innerHTML=it.map((x,i)=>`<li role="option" id="co${i}" aria-selected="${i===ai}" data-i="${i}">${esc(x.l)}</li>`).join('')||'<li class="mut" style="padding:12px">No matches</li>';cq.setAttribute('aria-activedescendant',it.length?'co'+ai:'')}
-function rc(){const q=cq.value.toLowerCase();it=base().filter(x=>x.l.toLowerCase().includes(q));ai=0;paint()}
-function run(x){cmd.close();if(!x)return;if(x.f)x.f();else if(x.p!=null){cat='All';drawTabs();drawProjects();location.hash='#work';const b=$('prj').querySelector(`[data-i="${x.p}"]`);b&&b.click()}else location.hash=x.h}
-function openCmd(){cq.value='';rc();if(!cmd.open)cmd.showModal();cq.focus()}
-$('ck').onclick=openCmd;cq.addEventListener('input',rc);cl.addEventListener('click',e=>{const l=e.target.closest('li[data-i]');if(l)run(it[l.dataset.i])});
-cq.addEventListener('keydown',e=>{if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();if(it.length){ai=(ai+(e.key==='ArrowDown'?1:-1)+it.length)%it.length;paint();$('co'+ai).scrollIntoView({block:'nearest'})}}else if(e.key==='Enter'){e.preventDefault();run(it[ai])}});
-addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();cmd.open?cmd.close():openCmd()}});
-cmd.addEventListener('click',e=>{if(e.target===cmd)cmd.close()});
-/* verified metrics only */
-document.querySelectorAll('#met h3').forEach(h=>{const v=+h.dataset.v,s=h.dataset.s,rm=matchMedia('(prefers-reduced-motion:reduce)').matches;if(rm){h.textContent=v+s;return}new IntersectionObserver((es,o)=>{if(es[0].isIntersecting){o.disconnect();const t0=performance.now(),f=n=>{const p=Math.min(1,(n-t0)/1200);h.textContent=Math.round(v*p)+(p===1?s:'');p<1&&requestAnimationFrame(f)};requestAnimationFrame(f)}}).observe(h)});
 })();
 </script>
 </body></html>
