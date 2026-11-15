@@ -212,7 +212,7 @@ header.on{background:rgba(8,13,27,.84);border-color:rgba(148,163,184,.14);backdr
 .scroll-cue i{display:block;width:34px;height:1px;background:linear-gradient(90deg,var(--cyan),transparent);position:relative;overflow:hidden}
 .scroll-cue i:after{content:"";position:absolute;inset:0;background:var(--white);transform:translateX(-100%);animation:cue-sweep 2s ease-in-out infinite}
 @keyframes cue-sweep{55%,100%{transform:translateX(100%)}}
-@media(max-width:900px){#experience-canvas{opacity:.78}.hero-stage.webgl-ready .stage-core{opacity:.28}.sec .head{transform:none}}
+@media(max-width:900px){#experience-canvas{opacity:.78}.hero-stage.webgl-ready .stage-core{opacity:0;visibility:hidden}.sec .head{transform:none}}
 @media(max-width:600px){#experience-canvas{opacity:.58}.hero-stage{height:clamp(330px,96vw,430px)}.hero .rv h1{animation:none}.scroll-cue{margin-top:24px}}
 @media(prefers-reduced-motion:reduce){#experience-canvas{display:none}.hero .rv,.hero .rv h1{animation:none}.scroll-cue i:after{animation:none}}
 
