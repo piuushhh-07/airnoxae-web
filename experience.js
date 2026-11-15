@@ -148,10 +148,11 @@
 
   if (reducedMotion || !supportsWebGL) return;
 
-  let renderer, scene, camera, rig, core, wire, rings = [], particles;
+  let renderer, scene, camera, rig, earth, clouds, atmosphere, cityLights, rings = [], particles, key;
   let raf = 0, visible = false, disposed = false;
   let pointerX = 0, pointerY = 0, scrollProgress = 0;
   let particleBase = new Float32Array(0), particleVelocity = new Float32Array(0);
+  const arcPulses = [];
   const clockStart = performance.now();
 
   const resize = () => {
@@ -178,14 +179,21 @@
     const targetY = pointerX * .2;
     rig.rotation.x += (targetX + scrollProgress * .13 - rig.rotation.x) * .035;
     rig.rotation.y += (targetY + scrollProgress * .32 - rig.rotation.y) * .035;
-    rig.position.y = Math.sin(elapsed * .55) * .075 - scrollProgress * .12;
-    core.rotation.x += .0018;
-    core.rotation.y += .003;
-    wire.rotation.x -= .0011;
-    wire.rotation.y += .0014;
+    rig.position.y = Math.sin(elapsed * .55) * .045 - scrollProgress * .12;
+    rig.scale.setScalar(1 + scrollProgress * .055);
+    earth.rotation.y += .00062;
+    earth.rotation.x = Math.sin(elapsed * .12) * .018;
+    clouds.rotation.y += .00078;
+    atmosphere.rotation.y -= .00012;
+    cityLights.rotation.y = earth.rotation.y;
     rings.forEach((ring, index) => {
-      ring.rotation.z += (index % 2 ? -1 : 1) * (.001 + index * .00025);
-      ring.rotation.x += .00035;
+      ring.rotation.z += (index % 2 ? -1 : 1) * (.00075 + index * .00018);
+      ring.rotation.x += .00022;
+    });
+    arcPulses.forEach((pulse) => {
+      pulse.progress = (pulse.progress + pulse.speed) % 1;
+      pulse.mesh.position.copy(pulse.curve.getPoint(pulse.progress));
+      pulse.mesh.scale.setScalar(.78 + Math.sin(pulse.progress * Math.PI * 2) * .2);
     });
     // Cursor-following key light and local particle repulsion with spring return.
     key.position.x += (pointerX * 3.8 - key.position.x) * .045;
@@ -249,7 +257,7 @@
 
       const ambient = new THREE.HemisphereLight(0x9ccfff, 0x071020, 1.55);
       scene.add(ambient);
-      const key = new THREE.PointLight(0x38bdf8, 38, 18, 2);
+      key = new THREE.PointLight(0x38bdf8, 38, 18, 2);
       key.position.set(3.5, 2.8, 4);
       scene.add(key);
       const rim = new THREE.PointLight(0x315cff, 46, 16, 2);
@@ -259,33 +267,133 @@
       rig = new THREE.Group();
       scene.add(rig);
 
-      const shape = new THREE.IcosahedronGeometry(1.22, 2);
-      const material = new THREE.MeshPhysicalMaterial({
-        color: 0x183b68,
-        metalness: .78,
-        roughness: .2,
-        clearcoat: 1,
-        clearcoatRoughness: .12,
-        iridescence: .28,
-        emissive: 0x071a3b,
-        emissiveIntensity: .7
+      // Textured Earth: day map, night-side city lights, cloud shell and a restrained atmosphere.
+      const textureLoader = new THREE.TextureLoader();
+      textureLoader.setCrossOrigin('anonymous');
+      const planetTextures = 'https://cdn.jsdelivr.net/gh/mrdoob/three.js@r180/examples/textures/planets/';
+      const sphereGeometry = new THREE.SphereGeometry(1.2, mobile ? 48 : 72, mobile ? 48 : 72);
+      const earthMaterial = new THREE.MeshPhongMaterial({
+        color: 0xffffff,
+        specular: new THREE.Color(0x355b80),
+        shininess: 18,
+        bumpScale: .018
       });
-      core = new THREE.Mesh(shape, material);
-      rig.add(core);
+      earth = new THREE.Mesh(sphereGeometry, earthMaterial);
+      rig.add(earth);
 
-      const wireGeo = new THREE.IcosahedronGeometry(1.34, 1);
-      wire = new THREE.Mesh(wireGeo, new THREE.MeshBasicMaterial({
-        color: 0x8bdcff,
-        wireframe: true,
-        transparent: true,
-        opacity: .22
-      }));
-      rig.add(wire);
+      const loadMap = (file, apply, colorMap = false) => {
+        textureLoader.load(planetTextures + file, (texture) => {
+          if (disposed) { texture.dispose(); return; }
+          if (colorMap) texture.colorSpace = THREE.SRGBColorSpace;
+          apply(texture);
+        }, undefined, () => {
+          // The scene remains usable if an optional texture host is unavailable.
+          if (file === 'earth_atmos_2048.jpg') earthMaterial.color.set(0x174b82);
+        });
+      };
+      loadMap('earth_atmos_2048.jpg', (texture) => {
+        earthMaterial.map = texture;
+        earthMaterial.needsUpdate = true;
+      }, true);
+      loadMap('earth_normal_2048.jpg', (texture) => {
+        earthMaterial.normalMap = texture;
+        earthMaterial.needsUpdate = true;
+      });
+      loadMap('earth_specular_2048.jpg', (texture) => {
+        earthMaterial.specularMap = texture;
+        earthMaterial.needsUpdate = true;
+      });
+
+      cityLights = new THREE.Mesh(
+        new THREE.SphereGeometry(1.204, mobile ? 40 : 64, mobile ? 40 : 64),
+        new THREE.MeshBasicMaterial({ color: 0x9bdcff, transparent: true, opacity: .58,
+          blending: THREE.AdditiveBlending, depthWrite: false })
+      );
+      rig.add(cityLights);
+      loadMap('earth_lights_2048.png', (texture) => {
+        cityLights.material.map = texture;
+        cityLights.material.needsUpdate = true;
+      }, true);
+
+      clouds = new THREE.Mesh(
+        new THREE.SphereGeometry(1.218, mobile ? 40 : 64, mobile ? 40 : 64),
+        new THREE.MeshPhongMaterial({ color: 0xffffff, transparent: true, opacity: .2,
+          depthWrite: false, blending: THREE.NormalBlending })
+      );
+      rig.add(clouds);
+      loadMap('earth_clouds_1024.png', (texture) => {
+        clouds.material.map = texture;
+        clouds.material.needsUpdate = true;
+      }, true);
+
+      atmosphere = new THREE.Mesh(
+        new THREE.SphereGeometry(1.29, mobile ? 40 : 64, mobile ? 40 : 64),
+        new THREE.ShaderMaterial({
+          uniforms: { glowColor: { value: new THREE.Color(0x38bdf8) } },
+          vertexShader: 'varying vec3 vNormal; varying vec3 vViewPosition; void main(){ vNormal=normalize(normalMatrix*normal); vec4 mvPosition=modelViewMatrix*vec4(position,1.0); vViewPosition=-mvPosition.xyz; gl_Position=projectionMatrix*mvPosition; }',
+          fragmentShader: 'uniform vec3 glowColor; varying vec3 vNormal; varying vec3 vViewPosition; void main(){ float rim=pow(0.78-max(dot(normalize(vNormal),normalize(vViewPosition)),0.0),3.0); gl_FragColor=vec4(glowColor,clamp(rim,0.0,1.0)*0.9); }',
+          side: THREE.BackSide, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false
+        })
+      );
+      rig.add(atmosphere);
+
+      // Geographic hubs and curved routes make the globe read as a connected world.
+      const globePoint = (lat, lon, radius = 1.235) => {
+        const phi = (90 - lat) * Math.PI / 180;
+        const theta = (lon + 180) * Math.PI / 180;
+        return new THREE.Vector3(
+          -radius * Math.sin(phi) * Math.cos(theta),
+          radius * Math.cos(phi),
+          radius * Math.sin(phi) * Math.sin(theta)
+        );
+      };
+      const hubs = [
+        { name: 'San Francisco', lat: 37.7749, lon: -122.4194 },
+        { name: 'New York', lat: 40.7128, lon: -74.006 },
+        { name: 'London', lat: 51.5072, lon: -.1276 },
+        { name: 'Mumbai', lat: 19.076, lon: 72.8777 },
+        { name: 'Singapore', lat: 1.3521, lon: 103.8198 },
+        { name: 'Tokyo', lat: 35.6762, lon: 139.6503 }
+      ];
+      const hubMaterial = new THREE.MeshBasicMaterial({ color: 0xb7edff });
+      const hubGeometry = new THREE.SphereGeometry(.018, 10, 10);
+      const hubPoints = hubs.map((hub) => {
+        const point = globePoint(hub.lat, hub.lon);
+        const marker = new THREE.Mesh(hubGeometry, hubMaterial);
+        marker.position.copy(point);
+        rig.add(marker);
+        const halo = new THREE.Mesh(
+          new THREE.SphereGeometry(.037, 8, 8),
+          new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: .2 })
+        );
+        halo.position.copy(point);
+        rig.add(halo);
+        return point;
+      });
+      const routePairs = [[0,1],[1,2],[2,3],[3,4],[4,5],[5,0],[2,5]];
+      routePairs.forEach(([from, to], index) => {
+        const start = hubPoints[from].clone();
+        const end = hubPoints[to].clone();
+        const control = start.clone().add(end).multiplyScalar(.5).normalize().multiplyScalar(1.48 + (index % 3) * .045);
+        const curve = new THREE.QuadraticBezierCurve3(start, control, end);
+        const route = new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints(curve.getPoints(42)),
+          new THREE.LineBasicMaterial({ color: index % 2 ? 0x38bdf8 : 0x8bdcff,
+            transparent: true, opacity: .34, depthWrite: false })
+        );
+        rig.add(route);
+        const pulse = new THREE.Mesh(
+          new THREE.SphereGeometry(.022, 8, 8),
+          new THREE.MeshBasicMaterial({ color: 0xe4f8ff, transparent: true, opacity: .95 })
+        );
+        rig.add(pulse);
+        arcPulses.push({ mesh: pulse, curve, progress: index / routePairs.length, speed: .0018 + (index % 3) * .00035 });
+      });
 
       const ringSpecs = [
-        [1.8, .012, 0x38bdf8, .72, [1.05, .18, -.42]],
-        [2.05, .008, 0x2563eb, .55, [-.55, 1.0, .72]],
-        [1.58, .006, 0xb7eaff, .34, [.42, -.82, 1.1]]
+        [1.58, .009, 0x38bdf8, .62, [1.05, .18, -.42]],
+        [1.82, .007, 0x2563eb, .44, [-.55, 1.0, .72]],
+        [1.43, .005, 0xb7eaff, .28, [.42, -.82, 1.1]]
       ];
       ringSpecs.forEach(([radius, tube, color, opacity, rotation]) => {
         const geometry = new THREE.TorusGeometry(radius, tube, 8, 160);
@@ -352,6 +460,19 @@
             scrub: 1.4,
             onUpdate: (self) => { scrollProgress = self.progress; }
           }
+        });
+        // Cinematic, scroll-scrubbed typography and card depth across the full site.
+        gsap.utils.toArray('main > section:not(#home) .head h2').forEach((heading) => {
+          gsap.fromTo(heading, { y: 30, opacity: 0, filter: 'blur(7px)' }, {
+            y: 0, opacity: 1, filter: 'blur(0px)', ease: 'none',
+            scrollTrigger: { trigger: heading, start: 'top 90%', end: 'top 58%', scrub: .8 }
+          });
+        });
+        gsap.utils.toArray('main > section:not(#home) .card').forEach((card) => {
+          gsap.fromTo(card, { y: 26, rotateX: 3, opacity: 0 }, {
+            y: 0, rotateX: 0, opacity: 1, ease: 'none',
+            scrollTrigger: { trigger: card, start: 'top 96%', end: 'top 72%', scrub: .7 }
+          });
         });
         ScrollTrigger.refresh();
       } catch (_) {
