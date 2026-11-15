@@ -99,7 +99,7 @@
     }, { passive: true });
     document.addEventListener('pointerleave', () => { cursor.style.opacity = ring.style.opacity = '0'; }, { passive: true });
     document.addEventListener('visibilitychange', () => {
-      if (document.hidden && trailFrame) cancelAnimationFrame(trailFrame);
+      if (document.hidden && trailFrame) { cancelAnimationFrame(trailFrame); trailFrame = 0; }
       else if (!document.hidden && !trailFrame) trailFrame = requestAnimationFrame(animateTrail);
     });
     document.body.classList.add('ax-pointer-ready');
@@ -151,6 +151,7 @@
   let renderer, scene, camera, rig, core, wire, rings = [], particles;
   let raf = 0, visible = false, disposed = false;
   let pointerX = 0, pointerY = 0, scrollProgress = 0;
+  let particleBase = new Float32Array(0), particleVelocity = new Float32Array(0);
   const clockStart = performance.now();
 
   const resize = () => {
@@ -186,6 +187,33 @@
       ring.rotation.z += (index % 2 ? -1 : 1) * (.001 + index * .00025);
       ring.rotation.x += .00035;
     });
+    // Cursor-following key light and local particle repulsion with spring return.
+    key.position.x += (pointerX * 3.8 - key.position.x) * .045;
+    key.position.y += (-pointerY * 2.8 - key.position.y) * .045;
+    const particlePositions = particles.geometry.attributes.position;
+    for (let i = 0; i < particlePositions.count; i += 1) {
+      const ix = i * 3;
+      const dx = particlePositions.array[ix] - pointerX * 2.5;
+      const dy = particlePositions.array[ix + 1] + pointerY * 2.0;
+      const dz = particlePositions.array[ix + 2];
+      const distanceSq = dx * dx + dy * dy + dz * dz;
+      if (distanceSq < 1.45) {
+        const force = (1.45 - distanceSq) * .018;
+        particleVelocity[ix] += dx * force;
+        particleVelocity[ix + 1] += dy * force;
+        particleVelocity[ix + 2] += dz * force;
+      }
+      particleVelocity[ix] += (particleBase[ix] - particlePositions.array[ix]) * .0018;
+      particleVelocity[ix + 1] += (particleBase[ix + 1] - particlePositions.array[ix + 1]) * .0018;
+      particleVelocity[ix + 2] += (particleBase[ix + 2] - particlePositions.array[ix + 2]) * .0018;
+      particleVelocity[ix] *= .965;
+      particleVelocity[ix + 1] *= .965;
+      particleVelocity[ix + 2] *= .965;
+      particlePositions.array[ix] += particleVelocity[ix];
+      particlePositions.array[ix + 1] += particleVelocity[ix + 1];
+      particlePositions.array[ix + 2] += particleVelocity[ix + 2];
+    }
+    particlePositions.needsUpdate = true;
     particles.rotation.y = elapsed * .012;
     particles.rotation.x = Math.sin(elapsed * .15) * .05;
     renderer.render(scene, camera);
@@ -279,8 +307,12 @@
         positions[i * 3 + 1] = radius * Math.cos(phi);
         positions[i * 3 + 2] = radius * Math.sin(phi) * Math.sin(theta);
       }
+      particleBase = positions.slice();
+      particleVelocity = new Float32Array(positions.length);
       const particleGeometry = new THREE.BufferGeometry();
-      particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      const positionAttribute = new THREE.BufferAttribute(positions, 3);
+      positionAttribute.setUsage(THREE.DynamicDrawUsage);
+      particleGeometry.setAttribute('position', positionAttribute);
       particles = new THREE.Points(particleGeometry, new THREE.PointsMaterial({
         color: 0x8bdcff,
         size: mobile ? .018 : .024,
@@ -294,12 +326,12 @@
       resize();
       stage.classList.add('webgl-ready');
       if (finePointer) {
-        stage.addEventListener('pointermove', (event) => {
-          const rect = stage.getBoundingClientRect();
-          pointerX = ((event.clientX - rect.left) / rect.width - .5) * 2;
-          pointerY = ((event.clientY - rect.top) / rect.height - .5) * 2;
-        }, { passive: true });
-        stage.addEventListener('pointerleave', () => { pointerX = 0; pointerY = 0; });
+        const trackWorldPointer = (event) => {
+          pointerX = (event.clientX / Math.max(1, innerWidth) - .5) * 2;
+          pointerY = (event.clientY / Math.max(1, innerHeight) - .5) * 2;
+        };
+        addEventListener('pointermove', trackWorldPointer, { passive: true });
+        addEventListener('blur', () => { pointerX = 0; pointerY = 0; });
       }
 
       // GSAP is optional: if its CDN is unavailable, the native scene and CSS reveals remain.
