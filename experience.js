@@ -32,6 +32,106 @@
     });
   }
 
+  // Global pointer field: one shared interaction system across every section.
+  const worldStyle = document.createElement('style');
+  worldStyle.textContent = `
+    .ax-cursor, .ax-cursor-trail, .ax-click-ripple { position:fixed; left:0; top:0; pointer-events:none; z-index:120; border-radius:50%; }
+    .ax-cursor { width:12px; height:12px; margin:-6px 0 0 -6px; background:#8bdcff; box-shadow:0 0 18px 5px rgba(56,189,248,.45); opacity:0; transition:width .22s,height .22s,background .22s,opacity .2s; mix-blend-mode:screen; }
+    .ax-cursor-ring { position:fixed; left:0; top:0; width:38px; height:38px; margin:-19px 0 0 -19px; border:1px solid rgba(139,220,255,.62); border-radius:50%; pointer-events:none; z-index:119; opacity:0; transition:width .25s,height .25s,border-color .25s,opacity .2s; }
+    .ax-cursor.is-hot { width:22px; height:22px; margin:-11px 0 0 -11px; background:#fff; }
+    .ax-cursor-ring.is-hot { width:58px; height:58px; margin:-29px 0 0 -29px; border-color:rgba(56,189,248,.95); }
+    .ax-cursor-trail { width:4px; height:4px; margin:-2px; background:#38bdf8; box-shadow:0 0 12px 2px rgba(56,189,248,.55); opacity:0; }
+    .ax-click-ripple { width:12px; height:12px; margin:-6px; border:1px solid rgba(139,220,255,.85); animation:ax-ripple .65s ease-out forwards; }
+    @keyframes ax-ripple { to { width:86px; height:86px; margin:-43px; opacity:0; } }
+    @media (hover:hover) and (pointer:fine) { body.ax-pointer-ready, body.ax-pointer-ready a, body.ax-pointer-ready button { cursor:none; } body.ax-pointer-ready input,body.ax-pointer-ready textarea,body.ax-pointer-ready select { cursor:text; } }
+    @media (prefers-reduced-motion:reduce) { .ax-cursor,.ax-cursor-ring,.ax-cursor-trail,.ax-click-ripple { display:none!important; } }
+  `;
+  document.head.appendChild(worldStyle);
+
+  if (finePointer && !reducedMotion) {
+    const cursor = document.createElement('i');
+    const ring = document.createElement('i');
+    cursor.className = 'ax-cursor';
+    ring.className = 'ax-cursor-ring';
+    document.body.append(cursor, ring);
+    const trail = Array.from({ length: mobile ? 5 : 10 }, () => {
+      const dot = document.createElement('i');
+      dot.className = 'ax-cursor-trail';
+      document.body.appendChild(dot);
+      return { el: dot, x: -100, y: -100 };
+    });
+    const pointer = { x: -100, y: -100, tx: -100, ty: -100 };
+    let trailFrame = 0;
+    const move = (event) => {
+      pointer.tx = event.clientX; pointer.ty = event.clientY;
+      cursor.style.opacity = ring.style.opacity = '1';
+      document.documentElement.style.setProperty('--ax-pointer-x', event.clientX + 'px');
+      document.documentElement.style.setProperty('--ax-pointer-y', event.clientY + 'px');
+    };
+    const animateTrail = () => {
+      pointer.x += (pointer.tx - pointer.x) * .34;
+      pointer.y += (pointer.ty - pointer.y) * .34;
+      cursor.style.transform = `translate3d(${pointer.tx}px,${pointer.ty}px,0)`;
+      ring.style.transform = `translate3d(${pointer.x}px,${pointer.y}px,0)`;
+      let x = pointer.x, y = pointer.y;
+      trail.forEach((dot, index) => {
+        const follow = .28 - index * .014;
+        dot.x += (x - dot.x) * follow;
+        dot.y += (y - dot.y) * follow;
+        dot.el.style.transform = `translate3d(${dot.x}px,${dot.y}px,0)`;
+        dot.el.style.opacity = String((1 - index / trail.length) * .7);
+        x = dot.x; y = dot.y;
+      });
+      trailFrame = requestAnimationFrame(animateTrail);
+    };
+    addEventListener('pointermove', move, { passive: true });
+    addEventListener('pointerdown', (event) => {
+      const ripple = document.createElement('i');
+      ripple.className = 'ax-click-ripple';
+      ripple.style.transform = `translate3d(${event.clientX}px,${event.clientY}px,0)`;
+      document.body.appendChild(ripple);
+      ripple.addEventListener('animationend', () => ripple.remove(), { once: true });
+    }, { passive: true });
+    document.addEventListener('pointerover', (event) => {
+      const hot = event.target.closest('a,button,[role="button"],.card');
+      cursor.classList.toggle('is-hot', !!hot);
+      ring.classList.toggle('is-hot', !!hot);
+    }, { passive: true });
+    document.addEventListener('pointerleave', () => { cursor.style.opacity = ring.style.opacity = '0'; }, { passive: true });
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden && trailFrame) cancelAnimationFrame(trailFrame);
+      else if (!document.hidden && !trailFrame) trailFrame = requestAnimationFrame(animateTrail);
+    });
+    document.body.classList.add('ax-pointer-ready');
+    trailFrame = requestAnimationFrame(animateTrail);
+
+    // Magnetic pull is deliberately small and only applies to primary actions.
+    document.querySelectorAll('.btn,.mag,nav a.l').forEach((target) => {
+      target.addEventListener('pointermove', (event) => {
+        const rect = target.getBoundingClientRect();
+        const dx = event.clientX - (rect.left + rect.width / 2);
+        const dy = event.clientY - (rect.top + rect.height / 2);
+        target.style.translate = `${dx * .055}px ${dy * .075}px`;
+      }, { passive: true });
+      target.addEventListener('pointerleave', () => { target.style.translate = ''; });
+    });
+  }
+
+  // A shared pointer-lit surface and scroll depth variables keep the visual language
+  // consistent across sections even while the hero's WebGL scene is out of view.
+  if (!reducedMotion) {
+    let scrollTick = false;
+    const updateWorld = () => {
+      const max = Math.max(1, document.documentElement.scrollHeight - innerHeight);
+      document.documentElement.style.setProperty('--ax-scroll-progress', String(scrollY / max));
+      scrollTick = false;
+    };
+    addEventListener('scroll', () => {
+      if (!scrollTick) { scrollTick = true; requestAnimationFrame(updateWorld); }
+    }, { passive: true });
+    updateWorld();
+  }
+
   // Scroll-linked section reveal and a restrained cinematic camera drift.
   const sections = [...document.querySelectorAll('main > section')];
   if ('IntersectionObserver' in window) {
