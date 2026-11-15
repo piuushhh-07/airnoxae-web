@@ -207,14 +207,13 @@ header.on{background:rgba(8,13,27,.84);border-color:rgba(148,163,184,.14);backdr
 
 <section class="sec" id="contact" style="background:var(--panel)"><div class="wrap cols"><div class="rv"><span class="eb">Contact</span><h2>Have an Idea Worth Building?</h2><p class="mut">Tell us what you're working on. Let's explore how technology can help turn your next idea into something useful.</p><div id="ci" style="margin-top:28px;display:grid;gap:14px"></div></div>
 <div class="rv"><p class="mut form-note" id="form-note" hidden></p><form id="fm" novalidate>
-<div class="f" data-s="3"><label for="n">Name *</label><input class="in2" id="n" name="name" autocomplete="name" required><span class="er" id="n-e" hidden></span></div>
-<div class="f" data-s="2"><label for="c">Business or company (optional)</label><input class="in2" id="c" name="company" autocomplete="organization"></div>
-<div class="f" data-s="3"><label for="e">Email *</label><input class="in2" id="e" name="email" type="email" autocomplete="email" required><span class="er" id="e-e" hidden></span></div>
-<div class="f" data-s="1"><label for="t">Project type *</label><select class="in2" id="t" name="type" required></select><span class="er" id="t-e" hidden></span></div>
-<div class="f w" data-s="1"><label for="b">Estimated budget (optional)</label><select class="in2" id="b" name="budget"><option value="">Select a range</option><option>Under ₹5 lakh</option><option>₹5 lakh to ₹15 lakh</option><option>₹15 lakh to ₹50 lakh</option><option>Above ₹50 lakh</option><option>Not decided yet</option></select></div>
-<div class="f w" data-s="2"><label for="d">Project description *</label><textarea class="in2" id="d" name="description" maxlength="1500" required></textarea><span class="er" id="d-e" hidden></span></div>
+<div class="f"><label for="n">Name *</label><input class="in2" id="n" name="name" autocomplete="name" required><span class="er" id="n-e" hidden></span></div>
+<div class="f"><label for="e">Email *</label><input class="in2" id="e" name="email" type="email" autocomplete="email" required><span class="er" id="e-e" hidden></span></div>
+<div class="f"><label for="t">What do you need? *</label><select class="in2" id="t" name="type" required></select><span class="er" id="t-e" hidden></span></div>
+<div class="f w"><label for="d">A few details *</label><textarea class="in2" id="d" name="description" maxlength="1000" required></textarea><span class="er" id="d-e" hidden></span></div>
 <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
-<div class="f w"><span class="er" id="fe" role="alert" hidden></span><p class="mut" id="sp" style="font-size:14px" aria-live="polite"></p><div class="row"><button class="btn s" id="bk" type="button">Back</button><button class="btn p" id="nx" type="button">Next →</button><button class="btn p" id="sb" type="submit">Submit inquiry</button></div></div></form>
+<div class="f w"><span class="er" id="fe" role="alert" hidden></span><button class="btn p" id="sb" type="submit">Prepare email</button></div>
+</form>
 <div class="res" id="res" hidden><h3 id="rt" tabindex="-1" style="font:700 24px var(--fd)"></h3><p class="mut" id="rp" style="margin:10px 0 16px"></p><textarea class="in2" id="rx" readonly hidden aria-label="Inquiry details"></textarea><div class="row" style="margin-top:14px"><a class="btn p" id="ml" href="#" hidden>Open email draft</a><button class="btn s" id="cp" type="button" hidden>Copy details</button><button class="btn s" id="rs" type="button">Back to form</button></div><p id="cs" role="status" class="mut"></p></div></div></div></section>
 </main>
 <footer><div class="wrap"><div class="fg"><div><img id="logo-footer" alt="AIRNOXAE TECHNOLOGIES" style="max-width:190px;margin-bottom:12px"><p style="color:var(--slate);font-size:14px">Software, AI and digital solutions from Ambernath, Maharashtra.</p></div><div><h3>Explore</h3><ul><li><a href="#home">Home</a></li><li><a href="#services">Services</a></li><li><a href="#work">Selected work</a></li><li><a href="#about">About</a></li><li><a href="#contact">Contact</a></li></ul></div><div><h3>Contact</h3><ul id="fc"></ul></div></div><div class="fb"><span id="cr"></span><span style="font-family:var(--fm);letter-spacing:.12em">INNOVATE. BUILD. TRANSFORM.</span></div></div></footer>
@@ -269,25 +268,20 @@ $('ci').innerHTML=[['Email',`<a href="mailto:${SITE.email}" class="addr">${SITE.
 $('fc').innerHTML=`<li>${SITE.email}</li><li>${SITE.phone}</li><li>${SITE.address}</li>`+SITE.socials.map(s=>`<li><a href="${safeUrl(s.url)}" target="_blank" rel="noopener noreferrer">${esc(s.label)}</a></li>`).join('');
 $('cr').textContent='© '+new Date().getFullYear()+' AIRNOXAE TECHNOLOGIES. All rights reserved.';
 document.addEventListener('click',e=>{const a=e.target.closest('[data-type]');if(a)$('t').value=a.dataset.type});
-/* form */
+/* concise contact form */
 const fm=$('fm'),RE=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
- if(!SITE.formEndpoint){$('form-note').textContent='This form prepares an email for you to review and send. Your inquiry is not transmitted automatically.';$('form-note').hidden=false;$('sb').textContent='Prepare email'}
-const rules={n:v=>v.trim().length<2?'Enter your name.':'',e:v=>RE.test(v.trim())?'':'Enter a valid email like name@company.com.',t:v=>v?'':'Choose a project type.',d:v=>v.trim().length<30?'Describe your project in at least 30 characters.':''};
-function chk(ks){let first=null;for(const k of ks||Object.keys(rules)){const el=$(k),m=rules[k](el.value);$(k+'-e').textContent=m;$(k+'-e').hidden=!m;m?el.setAttribute('aria-invalid','true'):el.removeAttribute('aria-invalid');if(m&&!first)first=el}return first}
-fm.addEventListener('input',e=>{if(e.target.getAttribute('aria-invalid'))chk(RS[st])});
-function show(title,txt,data){fm.hidden=true;$('res').hidden=false;$('rt').textContent=title;$('rp').textContent=txt;const man=!!data;$('rx').hidden=$('ml').hidden=$('cp').hidden=!man;
- if(man){const body=Object.entries(data).map(([k,v])=>k+': '+(v||'Not provided')).join('\n');$('rx').value=body;$('ml').href='mailto:'+SITE.email+'?subject='+encodeURIComponent('Project inquiry: '+(data.Company||data.Name))+'&body='+encodeURIComponent(body)}$('rt').focus()}
-$('rs').onclick=()=>{go(1);$('res').hidden=true;fm.hidden=false;$('n').focus()};
+if(!SITE.formEndpoint){$('form-note').textContent='Your email app will open with a prepared inquiry. Review it and send it to AIRNOXAE.';$('form-note').hidden=false}
+const rules={n:v=>v.trim().length<2?'Enter your name.':'',e:v=>RE.test(v.trim())?'':'Enter a valid email address.',t:v=>v?'':'Choose what you need.',d:v=>v.trim().length<10?'Add at least 10 characters about your project.':''};
+function validate(){let first=null;for(const k of Object.keys(rules)){const el=$(k),msg=rules[k](el.value);$(k+'-e').textContent=msg;$(k+'-e').hidden=!msg;msg?el.setAttribute('aria-invalid','true'):el.removeAttribute('aria-invalid');if(msg&&!first)first=el}return first}
+fm.addEventListener('input',e=>{if(e.target.getAttribute('aria-invalid'))validate()});
+function show(title,txt,data){fm.hidden=true;$('res').hidden=false;$('rt').textContent=title;$('rp').textContent=txt;const has=!!data;$('rx').hidden=$('ml').hidden=$('cp').hidden=!has;if(has){const body=Object.entries(data).map(([k,v])=>k+': '+(v||'Not provided')).join('\n');$('rx').value=body;$('ml').href='mailto:'+SITE.email+'?subject='+encodeURIComponent('Project inquiry: '+data.Name)+'&body='+encodeURIComponent(body)}$('rt').focus()}
+$('rs').onclick=()=>{fm.reset();fm.hidden=false;$('res').hidden=true;$('n').focus()};
 $('cp').onclick=()=>{const x=$('rx');(navigator.clipboard?navigator.clipboard.writeText(x.value):Promise.reject()).then(()=>$('cs').textContent='Copied.',()=>{x.select();$('cs').textContent='Selected. Copy with your keyboard.'})};
-let st=1;const RS={1:['t'],2:['d'],3:['n','e']};
-function go(n){st=n;fm.querySelectorAll('[data-s]').forEach(x=>x.hidden=+x.dataset.s!==n);$('sp').textContent='Step '+n+' of 3';$('bk').hidden=n===1;$('nx').hidden=n===3;$('sb').hidden=n!==3}
-$('nx').onclick=()=>{$('fe').hidden=true;const b=chk(RS[st]);if(b){b.focus();return}go(st+1);fm.querySelector('[data-s="'+st+'"] .in2').focus()};$('bk').onclick=()=>go(st-1);go(1);
-fm.addEventListener('submit',e=>{e.preventDefault();$('fe').hidden=true;if(st<3){$('nx').click();return}const bad=chk();if(bad){bad.focus();return}
- if(fm.website.value)return; // honeypot: bots only
- const data={Name:$('n').value.trim(),Company:$('c').value.trim(),Email:$('e').value.trim(),'Project type':$('t').value,Budget:$('b').value,Description:$('d').value.trim()};
- if(!SITE.formEndpoint){show('Your email is ready to prepare','No inquiry has been sent yet. Select “Open email draft” to review the details in your email app and send them to AIRNOXAE.',data);return}
- const sb=$('sb');sb.disabled=true;sb.textContent='Sending…';
- fetch(SITE.formEndpoint,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(data)}).then(r=>{if(!r.ok)throw 0;fm.reset();show('Inquiry received','Thank you. We will reply to '+data.Email+'.')}).catch(()=>{$('fe').textContent='We could not send your inquiry. Check your connection and try again, or email '+SITE.email+'.';$('fe').hidden=false}).then(()=>{sb.disabled=false;sb.textContent='Submit inquiry'})});
+fm.addEventListener('submit',e=>{e.preventDefault();$('fe').hidden=true;const bad=validate();if(bad){bad.focus();return}if(fm.website.value)return;
+const data={Name:$('n').value.trim(),Email:$('e').value.trim(),'Project type':$('t').value,Description:$('d').value.trim()};
+if(!SITE.formEndpoint){show('Your email is ready','Review the prepared message in your email app and send it to AIRNOXAE.',data);return}
+const sb=$('sb');sb.disabled=true;sb.textContent='Sending…';
+fetch(SITE.formEndpoint,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(data)}).then(r=>{if(!r.ok)throw 0;fm.reset();show('Inquiry received','Thank you. We will reply to '+data.Email+'.')}).catch(()=>{$('fe').textContent='We could not send your inquiry. Please email '+SITE.email+' instead.';$('fe').hidden=false}).then(()=>{sb.disabled=false;sb.textContent='Submit inquiry'})});
 /* nav, scroll */
 const hd=$('hd'),nv=$('nv'),bg=$('bg'),tp=$('top');
 bg.onclick=()=>{const o=nv.classList.toggle('open');bg.setAttribute('aria-expanded',o)};nv.addEventListener('click',e=>{if(e.target.closest('a')){nv.classList.remove('open');bg.setAttribute('aria-expanded','false')}});
