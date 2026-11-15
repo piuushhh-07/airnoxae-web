@@ -221,7 +221,7 @@ header.on{background:rgba(8,13,27,.84);border-color:rgba(148,163,184,.14);backdr
 <div class="f"><label for="t">What do you need? *</label><select class="in2" id="t" name="type" aria-describedby="t-e" required></select><span class="er" id="t-e" aria-live="polite" aria-atomic="true" hidden></span></div>
 <div class="f w"><label for="d">A few details *</label><textarea class="in2" id="d" name="description" maxlength="1000" aria-describedby="d-e" required></textarea><span class="er" id="d-e" aria-live="polite" aria-atomic="true" hidden></span></div>
 <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
-<div class="f w"><span class="er" id="fe" role="alert" hidden></span><button class="btn p" id="sb" type="submit">Prepare email</button></div>
+<div class="f w"><span class="er" id="fe" role="alert" hidden></span><button class="btn p" id="sb" type="submit">Send enquiry</button></div>
 </form>
 <div class="res" id="res" hidden><h3 id="rt" tabindex="-1" style="font:700 24px var(--fd)"></h3><p class="mut" id="rp" style="margin:10px 0 16px"></p><textarea class="in2" id="rx" readonly hidden aria-label="Inquiry details"></textarea><div class="row" style="margin-top:14px"><a class="btn p" id="ml" href="#" hidden>Open email draft</a><button class="btn s" id="cp" type="button" hidden>Copy details</button><button class="btn s" id="rs" type="button">Back to form</button></div><p id="cs" role="status" class="mut"></p></div></div></div></section>
 </main>
@@ -234,7 +234,7 @@ header.on{background:rgba(8,13,27,.84);border-color:rgba(148,163,184,.14);backdr
 /* ===== CENTRAL CONFIG: edit here ===== */
 const BRAND={logos:{brand:'assets/wordmark.png',symbol:'assets/symbol.png',full:'assets/vertical-logo.png'}}; // replace with file paths, e.g. 'assets/brand.png'
 const SITE={email:'info@airnoxaetechnologies.com',phone:'+91 8850951080',address:'Ambernath, Maharashtra, India',socials:[/* {label:'LinkedIn',url:'https://...'} */],
- formEndpoint:''}; // POST JSON endpoint (Formspree, Getform or your API). Empty = no sending; visitor gets a copy/email draft.
+ formEndpoint:'/api/contact'}; // Same-origin Vercel Function; email delivery uses server-only environment variables.
 const I={code:'<polyline points="8 7 3 12 8 17"/><polyline points="16 7 21 12 16 17"/>',web:'<rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/>',ai:'<circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/>',flow:'<circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8 11l8-4M8 13l8 4"/>',db:'<ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/>',api:'<path d="M9 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/>',qa:'<path d="M5 12l4 4 10-10"/>',map:'<path d="M12 3l9 5-9 5-9-5zM3 13l9 5 9-5"/>'};
 const SERVICES=[
  {t:'Websites & Digital Experiences',i:'web',p:'Professional, responsive websites that explain your business clearly and turn visitors into enquiries.'},
@@ -293,7 +293,7 @@ fm.addEventListener('submit',e=>{e.preventDefault();$('fe').hidden=true;const ba
 const data={Name:$('n').value.trim(),Email:$('e').value.trim(),'Project type':$('t').value,Description:$('d').value.trim()};
 if(!SITE.formEndpoint){show('Your email is ready','Review the prepared message in your email app and send it to AIRNOXAE.',data);return}
 const sb=$('sb');sb.disabled=true;sb.textContent='Sending…';
-fetch(SITE.formEndpoint,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(data)}).then(r=>{if(!r.ok)throw 0;fm.reset();show('Inquiry received','Thank you. We will reply to '+data.Email+'.')}).catch(()=>{$('fe').textContent='We could not send your inquiry. Please email '+SITE.email+' instead.';$('fe').hidden=false}).then(()=>{sb.disabled=false;sb.textContent='Submit inquiry'})});
+fetch(SITE.formEndpoint,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify({...data,website:fm.website.value})}).then(r=>{if(!r.ok)throw 0;fm.reset();show('Inquiry received','Thank you. Your enquiry has been sent. We will reply to '+data.Email+'.')}).catch(()=>{show('Email draft ready','Automatic delivery is temporarily unavailable. Review the prepared email and send it to AIRNOXAE.',data)}).then(()=>{sb.disabled=false;sb.textContent='Send enquiry'})});
 /* nav, scroll */
 const hd=$('hd'),nv=$('nv'),bg=$('bg'),tp=$('top');
 const setMenuOpen=open=>{nv.classList.toggle('open',open);bg.setAttribute('aria-expanded',String(open));bg.setAttribute('aria-label',open?'Close menu':'Open menu')};
