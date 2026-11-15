@@ -142,6 +142,20 @@ header.on{background:rgba(8,13,27,.84);border-color:rgba(148,163,184,.14);backdr
 [data-theme=light] .stage-chip small{color:#52627A}
 .hero-stage{height:clamp(390px,43vw,570px);width:100%;max-width:570px;justify-self:end;position:relative;isolation:isolate;perspective:1100px;display:grid;place-items:center;background:radial-gradient(ellipse at 50% 50%,rgba(37,99,235,.13),transparent 66%);--rx:0deg;--ry:0deg;transform-style:preserve-3d}
 .stage-grid{position:absolute;inset:8%;opacity:.2;background-image:linear-gradient(rgba(125,211,252,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(125,211,252,.12) 1px,transparent 1px);background-size:34px 34px;transform:rotateX(62deg) rotateZ(-24deg) scale(1.15);mask-image:radial-gradient(ellipse,#000 5%,transparent 70%)}
+.hero-stage{--pointer-x:50%;--pointer-y:50%;--depth:0;transition:background-position .15s}
+.hero-stage:before{content:"";position:absolute;inset:3%;border-radius:50%;border:1px solid rgba(125,211,252,.08);transform:rotateX(68deg) rotateZ(-18deg) scale(1.12);box-shadow:0 0 80px rgba(37,99,235,.08);pointer-events:none}
+.stage-light{position:absolute;inset:-12%;z-index:1;pointer-events:none;background:radial-gradient(340px circle at var(--pointer-x) var(--pointer-y),rgba(56,189,248,.19),transparent 68%);mix-blend-mode:screen;opacity:.85;transition:opacity .35s}
+.stage-scan{position:absolute;z-index:2;inset:9% 16%;border-radius:50%;pointer-events:none;background:linear-gradient(110deg,transparent 35%,rgba(125,211,252,.13) 49%,transparent 62%);filter:blur(7px);transform:rotate(-28deg);animation:dimensional-scan 9s ease-in-out infinite}
+.stage-core{backface-visibility:visible;will-change:transform;box-shadow:inset 1px 1px 1px rgba(255,255,255,.3),inset -18px -22px 38px rgba(0,0,0,.48),0 28px 90px rgba(0,0,0,.5),0 0 80px rgba(37,99,235,.24),0 0 130px rgba(56,189,248,.12)}
+.core-glint{position:absolute;inset:0!important;width:auto!important;height:auto!important;right:auto!important;top:auto!important;border-radius:inherit!important;background:linear-gradient(135deg,transparent 28%,rgba(255,255,255,.12) 45%,transparent 58%);box-shadow:none!important;animation:core-glint 7s ease-in-out infinite}
+.stage-particle{position:absolute;z-index:3;width:8px;height:8px;border-radius:50%;background:#BAE6FD;box-shadow:0 0 16px 4px rgba(56,189,248,.55);pointer-events:none}
+.particle-one{top:24%;left:22%;animation:particle-drift 7s ease-in-out infinite}
+.particle-two{right:18%;top:43%;width:5px;height:5px;animation:particle-drift 9s ease-in-out -3s infinite}
+.particle-three{bottom:24%;left:34%;width:4px;height:4px;animation:particle-drift 8s ease-in-out -5s infinite}
+@keyframes dimensional-scan{0%,100%{translate:-18% -12%;opacity:.1}50%{translate:18% 12%;opacity:.85}}
+@keyframes core-glint{0%,100%{opacity:.12;transform:translateX(-35%) rotate(12deg)}50%{opacity:.8;transform:translateX(35%) rotate(12deg)}}
+@keyframes particle-drift{0%,100%{translate:0 0;scale:.7;opacity:.35}50%{translate:12px -18px;scale:1.25;opacity:1}}
+
 .stage-halo{position:absolute;width:74%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(37,99,235,.24),rgba(56,189,248,.06) 42%,transparent 70%);filter:blur(14px);animation:halo-breathe 6s ease-in-out infinite}
 .stage-core{position:relative;z-index:3;width:clamp(150px,20vw,230px);aspect-ratio:1;border-radius:34% 42% 36% 43%;display:grid;place-items:center;background:linear-gradient(145deg,#1C3157,#10213D 42%,#0A1429);color:#EAF6FF;box-shadow:inset 1px 1px 1px rgba(255,255,255,.22),inset -18px -22px 38px rgba(0,0,0,.48),0 28px 90px rgba(0,0,0,.5),0 0 80px rgba(37,99,235,.22);transform:rotateX(calc(var(--rx)*-.5)) rotateY(calc(var(--ry)*-.5)) rotateZ(-12deg);animation:core-float 7s ease-in-out infinite;overflow:hidden}
 .stage-core:before{content:"";position:absolute;inset:-35%;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.18) 48%,transparent 58%);transform:translateX(-60%) rotate(12deg);animation:core-shine 8s ease-in-out infinite}
@@ -168,7 +182,7 @@ header.on{background:rgba(8,13,27,.84);border-color:rgba(148,163,184,.14);backdr
 .sec{padding-block:clamp(72px,8vw,112px)}
 #prog{background:linear-gradient(90deg,#2563EB,#38BDF8)}
 #glow{background:radial-gradient(circle,rgba(56,189,248,.1),transparent 68%)}
-@media (hover:none),(pointer:coarse){.hero::before,.stage-halo,.stage-core,.stage-core::before,.stage-orbit,.stage-chip{animation:none!important}}
+@media (hover:none),(pointer:coarse){.hero::before,.stage-halo,.stage-core,.stage-core::before,.stage-orbit,.stage-chip,.stage-scan,.stage-particle,.core-glint{animation:none!important}.stage-light{opacity:.35}}
 @media(max-width:900px){.hero-stage{max-width:540px;justify-self:center;width:100%;height:440px}.hgrid{gap:10px}}
 @media(max-width:560px){.hero-stage{height:350px;margin-top:8px}.stage-core{width:148px}.stage-chip{min-width:142px;padding:9px 10px}.stage-chip b{font-size:9px}.stage-chip small{font-size:10px}.chip-ai{top:7%;right:0}.chip-build{bottom:19%;left:0}.chip-flow{bottom:4%;right:0}.stage-caption{font-size:8px}.hero{padding-top:104px}.hero h1{font-size:clamp(46px,13vw,68px)}}
 @media(prefers-reduced-motion:reduce){.stage-core,.stage-orbit,.stage-chip,.stage-halo{animation:none!important}}
@@ -191,10 +205,11 @@ header.on{background:rgba(8,13,27,.84);border-color:rgba(148,163,184,.14);backdr
 <p class="sub">AI, software and digital experiences designed to move businesses forward.</p>
 <p class="d">AIRNOXAE TECHNOLOGIES builds thoughtful digital solutions that help businesses streamline operations, connect with customers and turn ideas into working products.</p>
 <div class="row"><a class="btn p mag" href="#work">Explore Our Work</a><a class="btn s mag" href="#contact">Let’s Build Something</a></div></div>
-<div class="hero-stage" id="hero-stage" role="img" aria-label="Dimensional AIRNOXAE technology sculpture">
-<div class="stage-grid"></div><div class="stage-halo"></div>
+<div class="hero-stage" id="hero-stage" role="img" aria-label="Interactive dimensional AIRNOXAE technology sculpture">
+<div class="stage-grid"></div><div class="stage-halo"></div><div class="stage-light"></div><div class="stage-scan"></div>
 <div class="stage-orbit orbit-one"></div><div class="stage-orbit orbit-two"></div><div class="stage-orbit orbit-three"></div>
-<div class="stage-core"><span>AX</span><i></i></div>
+<div class="stage-core"><span>AX</span><i></i><b class="core-glint"></b></div>
+<div class="stage-particle particle-one"></div><div class="stage-particle particle-two"></div><div class="stage-particle particle-three"></div>
 <a class="stage-chip chip-ai" href="#service-2" aria-label="Explore AI and workflow automation"><span class="chip-dot"></span><b>AI SYSTEMS</b><small>Intelligence, applied.</small></a>
 <a class="stage-chip chip-build" href="#service-1" aria-label="Explore custom software and product engineering"><span class="chip-dot"></span><b>PRODUCT ENGINEERING</b><small>Ideas into products.</small></a>
 <a class="stage-chip chip-flow" href="#service-3" aria-label="Explore integrations and connected workflows"><span class="chip-dot"></span><b>CONNECTED WORKFLOWS</b><small>Less friction. More flow.</small></a>
@@ -310,8 +325,8 @@ if('IntersectionObserver'in window){
 /* restrained 3D pointer parallax */
 const stage=$('hero-stage');
 if(stage&&matchMedia('(hover:hover) and (pointer:fine)').matches&&!matchMedia('(prefers-reduced-motion:reduce)').matches){
-stage.addEventListener('pointermove',e=>{const r=stage.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;stage.style.setProperty('--rx',(y*-8)+'deg');stage.style.setProperty('--ry',(x*10)+'deg')},{passive:true});
-stage.addEventListener('pointerleave',()=>{stage.style.setProperty('--rx','0deg');stage.style.setProperty('--ry','0deg')});
+stage.addEventListener('pointermove',e=>{const r=stage.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;stage.style.setProperty('--rx',((y-.5)*-13)+'deg');stage.style.setProperty('--ry',((x-.5)*17)+'deg');stage.style.setProperty('--pointer-x',(x*100)+'%');stage.style.setProperty('--pointer-y',(y*100)+'%')},{passive:true});
+stage.addEventListener('pointerleave',()=>{stage.style.setProperty('--rx','0deg');stage.style.setProperty('--ry','0deg');stage.style.setProperty('--pointer-x','50%');stage.style.setProperty('--pointer-y','50%')});
 }
 /* desktop pointer effects */
 if(matchMedia('(hover:hover) and (pointer:fine)').matches&&!matchMedia('(prefers-reduced-motion:reduce)').matches){
